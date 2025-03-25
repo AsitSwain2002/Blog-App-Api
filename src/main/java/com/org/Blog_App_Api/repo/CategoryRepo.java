@@ -8,4 +8,5 @@ import com.org.Blog_App_Api.model.Category;
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
 
+	boolean existsByNameAndIsDeletedFalse(String name);
 }
