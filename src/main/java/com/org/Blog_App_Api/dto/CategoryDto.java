@@ -15,6 +15,4 @@ public class CategoryDto {
 	private boolean isDeleted;
 	private Date createdOn;
 	private int CreatedBy;
-	private Date updateOn;
-	private int updateBy;
 }
