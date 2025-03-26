@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 		return true;
 	}
-
+     
 	private void categoryAlreadyPrsent(String name) {
 		boolean existsByNameAndIsDeletedFalse = categoryRepo.existsByNameAndIsDeletedFalse(name);
 		if (existsByNameAndIsDeletedFalse) {
