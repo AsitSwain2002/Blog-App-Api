@@ -23,8 +23,6 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public boolean saveCategory(CategoryDto categoryDto) {
 		Category category = mapper.map(categoryDto, Category.class);
-		category.setCreatedBy(1);
-		category.setCreatedOn(new Date());
 		Category save = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(save)) {
 			return false;
