@@ -28,8 +28,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 		// Name Already Present or not Check
 		categoryAlreadyPrsent(category.getName());
-		category.setCreatedBy(1);
-		category.setCreatedOn(new Date());
 		Category save = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(save)) {
 			return false;
