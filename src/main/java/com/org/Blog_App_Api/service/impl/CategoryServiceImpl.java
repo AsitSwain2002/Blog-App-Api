@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 		// Name Already Present or not Check
 		categoryAlreadyPrsent(category.getName());
 		// update logic
-		if (category.getId() != null) {
+		if (category.getId() != 0) {
 			updateCategory(category);
 		}
 		Category save = categoryRepo.save(category);
@@ -49,8 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
 		int catId = categoryIn.getId();
 		Category category = categoryRepo.findById(catId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + catId + "' Not Found"));
-		categoryIn.setName(category.getName());
-		categoryIn.setDeleted(category.isDeleted());
+		category.setName(categoryIn.getName());
+		category.setDeleted(categoryIn.isDeleted());
 	}
 
 	private void categoryAlreadyPrsent(String name) {
@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public CategoryDto findCategoryById(Integer id) {
-		Category category = categoryRepo.findById(id)
+		Category category = categoryRepo.findByIdAndIsDeletedFalse(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + id + "' Not Found"));
 
 		return mapper.map(category, CategoryDto.class);
