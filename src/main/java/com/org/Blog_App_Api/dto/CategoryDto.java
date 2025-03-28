@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDto {
 
+	private Integer id;
 	private String name;
 	private boolean isDeleted;
 	private Date created_on;

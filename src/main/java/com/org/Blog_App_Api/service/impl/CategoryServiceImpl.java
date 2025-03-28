@@ -2,6 +2,7 @@ package com.org.Blog_App_Api.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
 		int catId = categoryIn.getId();
 		Category category = categoryRepo.findById(catId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + catId + "' Not Found"));
-		category.setName(categoryIn.getName());
+		categoryIn.setName(category.getName());
+		categoryIn.setDeleted(category.isDeleted());
 	}
 
 	private void categoryAlreadyPrsent(String name) {
@@ -68,14 +70,16 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<CategoryDto> findAllCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Category> findAllByisDeletedFalse = categoryRepo.findByIsDeletedFalse();
+		return findAllByisDeletedFalse.stream().map(e -> mapper.map(e, CategoryDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
 	public void deleteCategory(Integer id) {
-		// TODO Auto-generated method stub
-
+		Category category = categoryRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + id + "' Not Found"));
+		category.setDeleted(true);
+		categoryRepo.save(category);
 	}
 
 }

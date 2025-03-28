@@ -30,4 +30,13 @@ public class GenericExceptionHandler {
 		ed.setTime(new Date().toLocaleString());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.CONFLICT);
 	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<?> IllegalArgumentException(IllegalArgumentException al) {
+		ExceptionData ed = new ExceptionData();
+		ed.setMessage(al.getMessage());
+		ed.setStatus(HttpStatus.CONFLICT.value());
+		ed.setTime(new Date().toLocaleString());
+		return ResponseBuilder.withErrorMessage(ed, HttpStatus.CONFLICT);
+	}
 }
