@@ -19,6 +19,6 @@ public class Category extends BaseModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
-	private boolean isDeleted;
+	private boolean catDeleted;
 }
  

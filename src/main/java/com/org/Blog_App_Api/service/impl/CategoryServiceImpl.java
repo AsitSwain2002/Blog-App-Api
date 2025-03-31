@@ -26,15 +26,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public boolean saveCategory(CategoryDto categoryDto) {
-
 		// validation
-
 		Category category = mapper.map(categoryDto, Category.class);
-		// Name Already Present or not Check
-		categoryAlreadyPrsent(category.getName());
 		// update logic
 		if (category.getId() != 0) {
 			updateCategory(category);
+		} else {
+			// Name Already Present or not Check
+			categoryAlreadyPrsent(category.getName());
 		}
 		Category save = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(save)) {
@@ -45,16 +44,15 @@ public class CategoryServiceImpl implements CategoryService {
 
 	// update Category method
 	private void updateCategory(Category categoryIn) {
-
 		int catId = categoryIn.getId();
 		Category category = categoryRepo.findById(catId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + catId + "' Not Found"));
 		category.setName(categoryIn.getName());
-		category.setDeleted(categoryIn.isDeleted());
+		category.setCatDeleted(categoryIn.isCatDeleted());
 	}
 
 	private void categoryAlreadyPrsent(String name) {
-		boolean existsByNameAndIsDeletedFalse = categoryRepo.existsByNameAndIsDeletedFalse(name);
+		boolean existsByNameAndIsDeletedFalse = categoryRepo.existsByNameAndCatDeletedFalse(name);
 		if (existsByNameAndIsDeletedFalse) {
 			throw new AlreadyExists(name + " Already Present");
 		}
@@ -62,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public CategoryDto findCategoryById(Integer id) {
-		Category category = categoryRepo.findByIdAndIsDeletedFalse(id)
+		Category category = categoryRepo.findByIdAndCatDeletedFalse(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + id + "' Not Found"));
 
 		return mapper.map(category, CategoryDto.class);
@@ -70,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<CategoryDto> findAllCategory() {
-		List<Category> findAllByisDeletedFalse = categoryRepo.findByIsDeletedFalse();
+		List<Category> findAllByisDeletedFalse = categoryRepo.findByCatDeletedFalse();
 		return findAllByisDeletedFalse.stream().map(e -> mapper.map(e, CategoryDto.class)).collect(Collectors.toList());
 	}
 
@@ -78,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
 	public void deleteCategory(Integer id) {
 		Category category = categoryRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category with id '" + id + "' Not Found"));
-		category.setDeleted(true);
+		category.setCatDeleted(true);
 		categoryRepo.save(category);
 	}
 

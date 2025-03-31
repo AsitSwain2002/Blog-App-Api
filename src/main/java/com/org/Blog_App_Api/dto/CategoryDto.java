@@ -13,7 +13,7 @@ public class CategoryDto {
 
 	private Integer id;
 	private String name;
-	private boolean isDeleted;
+	private boolean catDeleted;
 	private Date created_on;
 	private int Created_by;
 	private Date update_on;
