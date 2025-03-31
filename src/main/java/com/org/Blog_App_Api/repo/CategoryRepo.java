@@ -11,9 +11,9 @@ import com.org.Blog_App_Api.model.Category;
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
 
-	boolean existsByNameAndIsDeletedFalse(String name);
+	boolean existsByNameAndCatDeletedFalse(String name);
 
-	List<Category> findByIsDeletedFalse();
+	List<Category> findByCatDeletedFalse();
 
-	Optional<Category> findByIdAndIsDeletedFalse(Integer id);
+	Optional<Category> findByIdAndCatDeletedFalse(Integer id);
 }
