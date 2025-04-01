@@ -39,4 +39,13 @@ public class GenericExceptionHandler {
 		ed.setTime(new Date().toLocaleString());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.CONFLICT);
 	}
+
+	@ExceptionHandler(CategoryValidationException.class)
+	public ResponseEntity<?> categoryValidationException(CategoryValidationException ex) {
+		ExceptionData ed = new ExceptionData();
+		ed.setMessage(ex.getMessage());
+		ed.setStatus(HttpStatus.BAD_REQUEST.value());
+		ed.setTime(new Date().toLocaleString());
+		return ResponseBuilder.withValidationErrorMessage(ed, ex.getError(), HttpStatus.BAD_REQUEST);
+	}
 }

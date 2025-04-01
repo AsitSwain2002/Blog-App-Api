@@ -17,13 +17,16 @@ public class GenericResponseHandler {
 	private String message;
 	private Object data;
 	private int status;
+	private Map<String, Object> validationMessage;
 
 	public ResponseEntity<?> create() {
 		Map<String, Object> response = new LinkedHashMap<String, Object>();
 		response.put("message", message);
 		response.put("data", data);
 		response.put("status", status);
-
+		if (validationMessage != null) {
+			response.put("validationMessage", validationMessage);
+		}
 		return new ResponseEntity<>(response, statusCode);
 	}
 

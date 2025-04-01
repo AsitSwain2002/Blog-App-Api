@@ -1,5 +1,7 @@
 package com.org.Blog_App_Api.Util;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -27,6 +29,16 @@ public class ResponseBuilder {
 		GenericResponseHandler gs = new GenericResponseHandler();
 		gs.setData(message);
 		gs.setStatusCode(status);
+		return gs.create();
+	}
+
+	public static ResponseEntity<?> withValidationErrorMessage(ExceptionData message, Map<String, Object> map,
+			HttpStatus status) {
+		GenericResponseHandler gs = new GenericResponseHandler();
+		gs.setData(message);
+		gs.setStatusCode(status);
+		gs.setStatus(status.value());
+		gs.setValidationMessage(map);
 		return gs.create();
 	}
 

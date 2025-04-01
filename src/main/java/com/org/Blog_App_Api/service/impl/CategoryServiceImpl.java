@@ -15,6 +15,7 @@ import com.org.Blog_App_Api.dto.CategoryDto;
 import com.org.Blog_App_Api.model.Category;
 import com.org.Blog_App_Api.repo.CategoryRepo;
 import com.org.Blog_App_Api.service.CategoryService;
+import com.org.Blog_App_Api.validation.CategoryValidation;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -23,18 +24,22 @@ public class CategoryServiceImpl implements CategoryService {
 	private ModelMapper mapper;
 	@Autowired
 	private CategoryRepo categoryRepo;
+	@Autowired
+	private CategoryValidation categoryValidation;
 
 	@Override
 	public boolean saveCategory(CategoryDto categoryDto) {
 
 		// validation
-
+		categoryValidation.categoryValidation(categoryDto);
 		Category category = mapper.map(categoryDto, Category.class);
-		// Name Already Present or not Check
-		categoryAlreadyPrsent(category.getName());
 		// update logic
 		if (category.getId() != 0) {
 			updateCategory(category);
+		}
+		if (category.getId() == 0) {
+			// Name Already Present or not Check
+			categoryAlreadyPrsent(category.getName());
 		}
 		Category save = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(save)) {
