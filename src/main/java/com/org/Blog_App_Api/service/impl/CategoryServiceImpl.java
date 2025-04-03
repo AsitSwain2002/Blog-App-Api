@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 		// validation
 		Category category = mapper.map(categoryDto, Category.class);
 		// update logic
-		if (category.getId() != 0) {
+		if (category.getId() != null) {
 			updateCategory(category);
 		} else {
 			// Name Already Present or not Check
