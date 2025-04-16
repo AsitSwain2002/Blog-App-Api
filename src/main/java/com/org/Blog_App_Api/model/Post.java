@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -18,6 +19,8 @@ public class Post extends BaseModel{
 	private String content;
 	private String image;
 //	private List<Comments> comments;
-	private int category;
-	private boolean isDleted;
+	@ManyToOne
+	private Category category;
+	private boolean isDeleted;
 }
+ 
