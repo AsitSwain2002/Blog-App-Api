@@ -23,9 +23,10 @@ public class Post extends BaseModel {
 	private Integer id;
 	private String title;
 	private String content;
-	private String image;
 //	private List<Comments> comments;
 	@ManyToOne
 	private Category category;
+	@ManyToOne
+	private FileDetails fileDetails;
 	private boolean isDeleted;
 }

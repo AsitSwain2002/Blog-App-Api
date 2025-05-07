@@ -16,6 +16,6 @@ public class FileDetails {
 	private String displayFileName;
 	private String uploadFileName;
 	private String originalFileName;
-	private String fileSize;
+	private Long fileSize;
 	private String path;
 }
