@@ -25,6 +25,7 @@ import com.org.Blog_App_Api.model.Post;
 import com.org.Blog_App_Api.repo.FileRepo;
 import com.org.Blog_App_Api.repo.PostRepo;
 import com.org.Blog_App_Api.service.PostService;
+import com.org.Blog_App_Api.validation.PostValidation;
 
 import ch.qos.logback.core.util.FileUtil;
 
@@ -43,13 +44,18 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	private FileRepo fileRepo;
 
+	@Autowired
+	private PostValidation postValidation;
+
 	@Override
 	public boolean createrPost(String postReq, MultipartFile file) throws IOException {
 
-		// validation here
-
+		// String convert to dto file
 		ObjectMapper ob = new ObjectMapper();
 		PostDto postDto = ob.readValue(postReq, PostDto.class);
+
+		// validation here
+		postValidation.postValidate(postDto);
 		Post post = mapper.map(postDto, Post.class);
 		FileDetails fileDetails = saveFile(file);
 		if (!ObjectUtils.isEmpty(fileDetails)) {

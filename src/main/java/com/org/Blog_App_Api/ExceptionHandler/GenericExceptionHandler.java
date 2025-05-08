@@ -39,4 +39,14 @@ public class GenericExceptionHandler {
 		ed.setTime(new Date().toLocaleString());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.CONFLICT);
 	}
+
+	@ExceptionHandler(PostValidationException.class)
+	public ResponseEntity<?> PostVaidationException(PostValidationException pv) {
+		ExceptionData ed = new ExceptionData();
+		ed.setMessage(pv.getMessage());
+		ed.setStatus(HttpStatus.BAD_REQUEST.value());
+		ed.setTime(new Date().toLocaleString());
+		ed.setValidationMessage(pv.getErrors());
+		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
+	}
 }

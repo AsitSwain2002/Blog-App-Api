@@ -1,6 +1,6 @@
 package com.org.Blog_App_Api.ExceptionHandler;
 
-
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,4 +12,5 @@ public class ExceptionData {
 	private int status;
 	private String message;
 	private String time;
+	private Map<String, Object> validationMessage;
 }
