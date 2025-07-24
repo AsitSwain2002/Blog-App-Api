@@ -10,5 +10,7 @@ import com.org.Blog_App_Api.model.Post;
 @Repository
 public interface PostRepo extends JpaRepository<Post, Integer> {
 
-	List<Post> findAllByIsDeletedFalse();
+	List<Post> findAllByDeletedFalse();
+
+	List<Post> findAllByCategory(int categoryId);
 }

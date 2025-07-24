@@ -19,9 +19,13 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.Blog_App_Api.ExceptionHandler.ResourceNotFoundException;
+import com.org.Blog_App_Api.dto.FileDetailsDto;
 import com.org.Blog_App_Api.dto.PostDto;
+import com.org.Blog_App_Api.model.Category;
 import com.org.Blog_App_Api.model.FileDetails;
 import com.org.Blog_App_Api.model.Post;
+import com.org.Blog_App_Api.repo.CategoryRepo;
 import com.org.Blog_App_Api.repo.FileRepo;
 import com.org.Blog_App_Api.repo.PostRepo;
 import com.org.Blog_App_Api.service.PostService;
@@ -34,7 +38,8 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private PostRepo postRepo;
-
+	@Autowired
+	private CategoryRepo categoryRepo;
 	@Autowired
 	private ModelMapper mapper;
 
@@ -54,15 +59,25 @@ public class PostServiceImpl implements PostService {
 		ObjectMapper ob = new ObjectMapper();
 		PostDto postDto = ob.readValue(postReq, PostDto.class);
 
+		Post post = mapper.map(postDto, Post.class);
 		// validation here
 		postValidation.postValidate(postDto);
-		Post post = mapper.map(postDto, Post.class);
+
+		// Update post
+		if (postDto.getId() != null) {
+			postUpdate(post, file);
+		}
+		// File Upload
 		FileDetails fileDetails = saveFile(file);
 		if (!ObjectUtils.isEmpty(fileDetails)) {
 			post.setFileDetails(fileDetails);
 		} else {
-			post.setFileDetails(null);
+			if (ObjectUtils.isEmpty(postDto.getId())) {
+				post.setFileDetails(null);
+			}
 		}
+		// Category Exist or not
+		categoryExist(postDto.getCategory().getId());
 		Post save = postRepo.save(post);
 		if (ObjectUtils.isEmpty(save)) {
 			return false;
@@ -70,11 +85,33 @@ public class PostServiceImpl implements PostService {
 		return true;
 	}
 
+	// Find All post By category
+	@Override
+	public List<PostDto> findpostByCategory(int categoryId) {
+		categoryExist(categoryId);
+		List<Post> findAllByCategory = postRepo.findAllByCategory(categoryId);
+		return findAllByCategory.stream().map(e -> mapper.map(e, PostDto.class)).collect(Collectors.toList());
+
+	}
+
+	private void categoryExist(int id) {
+		categoryRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Category with Id  " + id + " Not Found"));
+	}
+
+	private void postUpdate(Post postDto, MultipartFile file) {
+		Post post = postRepo.findById(postDto.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + postDto.getId() + " Not Found"));
+		if (ObjectUtils.isEmpty(file)) {
+			postDto.setFileDetails(post.getFileDetails());
+		}
+	}
+
 	private FileDetails saveFile(MultipartFile file) throws IOException {
 		if (!ObjectUtils.isEmpty(file) && file != null) {
 
 			String originalFilename = file.getOriginalFilename(); // get the original file name
-			String extension = FilenameUtils.getExtension(originalFilename);
+			String extension = FilenameUtils.getExtension(originalFilename).toLowerCase();
 
 			List<String> supportExtension = Arrays.asList("png", "jpg", "jpeg");
 			if (!supportExtension.contains(extension)) {
@@ -119,7 +156,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDto> fetchAllPost() {
-		List<Post> findAllByIsDeletedFalse = postRepo.findAllByIsDeletedFalse();
+		List<Post> findAllByIsDeletedFalse = postRepo.findAllByDeletedFalse();
 		List<PostDto> collect = findAllByIsDeletedFalse.stream().map(e -> mapper.map(e, PostDto.class))
 				.collect(Collectors.toList());
 		return collect;
@@ -127,14 +164,22 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostDto findpostById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Post post = postRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + id + "Not Found"));
+		if (post.isDeleted() == false) {
+			return mapper.map(post, PostDto.class);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public void deletePost(int id) {
-		// TODO Auto-generated method stub
-
+		Post post = postRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + id + "Not Found"));
+		post.setDeleted(true);
+		postRepo.save(post);
 	}
 
 }

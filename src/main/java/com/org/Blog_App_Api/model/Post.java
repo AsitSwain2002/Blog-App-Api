@@ -28,5 +28,5 @@ public class Post extends BaseModel {
 	private Category category;
 	@ManyToOne
 	private FileDetails fileDetails;
-	private boolean isDeleted;
+	private boolean deleted;
 }
