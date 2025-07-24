@@ -1,11 +1,7 @@
-package com.org.Blog_App_Api.dto;
+ package com.org.Blog_App_Api.dto;
 
 import java.util.Date;
 
-import com.org.Blog_App_Api.model.Category;
-import com.org.Blog_App_Api.model.FileDetails;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,12 +11,29 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostDto {
 
+	private Integer id;
 	private String title;
 	private String content;
 	private Date createdOn;
 	private int CreatedBy;
 	private Date updateOn;
-	private boolean isDleted;
-	private FileDetails fileDetails;
-	private Category category;
-} 
+	private boolean deleted;
+	private FileDetailsDto fileDetails;
+	private CategoryDto category;
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	public static class CategoryDto {
+		private Integer id;
+		private String name;
+	}
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	public static class FileDetailsDto {
+		private Integer id;
+		private String displayFileName;
+	}
+}

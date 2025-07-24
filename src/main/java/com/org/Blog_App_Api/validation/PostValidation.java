@@ -14,7 +14,8 @@ public class PostValidation {
 
 	public void postValidate(PostDto postDto) {
 		Map<String, Object> error = new LinkedHashMap<String, Object>();
-		if (ObjectUtils.isEmpty(postDto)) {
+		System.out.println(postDto);
+		if (ObjectUtils.isEmpty(postDto) && postDto.getTitle() != null && postDto.getContent() != null) {
 			throw new IllegalArgumentException("Post data Can not be null");
 		} else {
 			if (postDto.getTitle().length() < 10) {
@@ -30,7 +31,9 @@ public class PostValidation {
 				error.put("content", "content length must less than 2500");
 			}
 		}
-		if (!ObjectUtils.isEmpty(error)) {
+		if (!ObjectUtils.isEmpty(error))
+
+		{
 			throw new PostValidationException(error);
 		}
 	}

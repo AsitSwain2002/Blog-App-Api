@@ -18,5 +18,7 @@ public interface PostService {
 	public PostDto findpostById(int id);
 	
 	public void deletePost(int id);
+
+	public List<PostDto> findpostByCategory(int categoryId);
 	
 }
