@@ -14,7 +14,6 @@ public class PostValidation {
 
 	public void postValidate(PostDto postDto) {
 		Map<String, Object> error = new LinkedHashMap<String, Object>();
-		System.out.println(postDto);
 		if (ObjectUtils.isEmpty(postDto) && postDto.getTitle() != null && postDto.getContent() != null) {
 			throw new IllegalArgumentException("Post data Can not be null");
 		} else {

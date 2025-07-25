@@ -1,4 +1,4 @@
- package com.org.Blog_App_Api.dto;
+package com.org.Blog_App_Api.dto;
 
 import java.util.Date;
 
@@ -34,6 +34,13 @@ public class PostDto {
 	@NoArgsConstructor
 	public static class FileDetailsDto {
 		private Integer id;
-		private String displayFileName;
+		private String path;
+
+		public String getImage_url() {
+			if (path != null) {
+				return "http://localhost:8080/" + path;
+			}
+			return null;
+		}
 	}
 }
