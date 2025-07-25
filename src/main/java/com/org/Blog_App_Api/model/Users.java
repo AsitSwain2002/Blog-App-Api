@@ -1,12 +1,14 @@
 package com.org.Blog_App_Api.model;
 
+import org.hibernate.annotations.GeneratorType;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,17 +16,19 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class FileDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Users {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String displayFileName;
-	private String uploadFileName;
-	private String originalFileName;
-	private Long fileSize;
-	private String path;
+	private int id;
+	private String firstName;
+	private String lastName;
+	private String mobile;
+	private String email;
+	private String password;
+	@OneToOne
+	private FileDetails fileDetails;
 }

@@ -12,5 +12,5 @@ public interface PostRepo extends JpaRepository<Post, Integer> {
 
 	List<Post> findAllByDeletedFalse();
 
-	List<Post> findAllByCategory(int categoryId);
+	List<Post> findAllByCategoryId(int categoryId);
 }

@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<PostDto> findpostByCategory(int categoryId) {
 		categoryExist(categoryId);
-		List<Post> findAllByCategory = postRepo.findAllByCategory(categoryId);
+		List<Post> findAllByCategory = postRepo.findAllByCategoryId(categoryId);
 		return findAllByCategory.stream().map(e -> mapper.map(e, PostDto.class)).collect(Collectors.toList());
 
 	}
