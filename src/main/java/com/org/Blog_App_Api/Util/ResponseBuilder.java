@@ -20,22 +20,15 @@ public class ResponseBuilder {
 		gs.setMessage(message);
 		gs.setStatus(status.value());
 		gs.setStatusCode(status);
-		return gs.create();
+		return gs.onlyMessage();
 	}
 
-	public static ResponseEntity<?> withErrorMessage(String message, HttpStatus status) {
+	public static ResponseEntity<?> withErrorMessage(ExceptionData ed, HttpStatus status) {
 		GenericResponseHandler gs = new GenericResponseHandler();
-		gs.setData(message);
-		gs.setStatusCode(status);
-		return gs.create();
-	}
-
-	public static ResponseEntity<?> withErrorMessage(ExceptionData message, HttpStatus status) {
-		GenericResponseHandler gs = new GenericResponseHandler();
-		gs.setData(message);
-		gs.setStatusCode(status);
 		gs.setMessage("Failed");
+		gs.setData(ed);
 		gs.setStatus(status.value());
+		gs.setStatusCode(status);
 		return gs.create();
 	}
 }

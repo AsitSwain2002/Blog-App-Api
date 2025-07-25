@@ -23,7 +23,12 @@ public class GenericResponseHandler {
 		response.put("message", message);
 		response.put("data", data);
 		response.put("status", status);
-
+		return new ResponseEntity<>(response, statusCode);
+	}
+	public ResponseEntity<?> onlyMessage() {
+		Map<String, Object> response = new LinkedHashMap<String, Object>();
+		response.put("message", message);
+		response.put("status", status);
 		return new ResponseEntity<>(response, statusCode);
 	}
 

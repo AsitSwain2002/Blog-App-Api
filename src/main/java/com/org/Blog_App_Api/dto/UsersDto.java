@@ -1,5 +1,7 @@
 package com.org.Blog_App_Api.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public class UsersDto {
 	private String email;
 	private String password;
 	private FileDetailsDto fileDetailsDto;
+	private List<RoleDto> role;
 
 	@Getter
 	@Setter
@@ -27,5 +30,13 @@ public class UsersDto {
 	@NoArgsConstructor
 	public class FileDetailsDto {
 		private String displayFileName;
+	}
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class RoleDto {
+		private int id;
 	}
 }

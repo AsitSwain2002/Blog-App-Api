@@ -7,8 +7,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,20 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.org.Blog_App_Api.Util.AppUtil;
+import com.org.Blog_App_Api.Util.MailService;
+import com.org.Blog_App_Api.dto.MailData;
+import com.org.Blog_App_Api.dto.UsersDto;
 import com.org.Blog_App_Api.model.FileDetails;
+import com.org.Blog_App_Api.model.Role;
+import com.org.Blog_App_Api.model.UserVerification;
 import com.org.Blog_App_Api.model.Users;
 import com.org.Blog_App_Api.repo.FileRepo;
+import com.org.Blog_App_Api.repo.RoleRepo;
 import com.org.Blog_App_Api.repo.UserRepo;
 import com.org.Blog_App_Api.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserSerciceImpl implements UserService {
@@ -31,15 +42,22 @@ public class UserSerciceImpl implements UserService {
 	private UserRepo userRepo;
 	@Autowired
 	private FileRepo fileRepo;
-
+	@Autowired
+	private ModelMapper mapper;
 	@Value("${file.upload.path}")
 	private String folderName;
+	@Autowired
+	private RoleRepo roleRepo;
+
+	@Autowired
+	private MailService mailService;
 
 	@Override
-	public boolean registerUser(String userDto, MultipartFile file) throws IOException {
+	public boolean registerUser(String reqUser, MultipartFile file, String url) throws Exception {
 
-		Users user = objMapper.readValue(userDto, Users.class);
+		UsersDto usersDto = objMapper.readValue(reqUser, UsersDto.class);
 
+		Users user = mapper.map(usersDto, Users.class);
 		// user Validation
 
 		// save User
@@ -47,11 +65,47 @@ public class UserSerciceImpl implements UserService {
 		if (!ObjectUtils.isEmpty(saveFile)) {
 			user.setFileDetails(saveFile);
 		}
+		// Set Role
+		setRole(usersDto, user);
+		setVerification(user);
 		Users save = userRepo.save(user);
 		if (!ObjectUtils.isEmpty(save)) {
+			sendMail(user, url);
 			return true;
 		}
 		return false;
+	}
+
+	private void setVerification(Users user) {
+		UserVerification build = UserVerification.builder().verificationCode(UUID.randomUUID().toString()).build();
+		user.setUserVerification(build);
+
+	}
+
+	private void sendMail(Users user, String url) throws Exception {
+
+		String message = "<b>Hii [[userName]]</b><br>" + "Your Account Created Sucessfully <br>"
+				+ "Click the below link for account verify<br>" + "<a href ='[[link]]'>Click Here </a><br><br>"
+				+ "Thanks,<br>" + "owner";
+
+		message = message.replace("[[userName]]", user.getFirstName());
+		message = message.replace("[[link]]", url + "/api/v1/home/verify?uId=" + user.getId() + "&vCode="
+				+ user.getUserVerification().getVerificationCode());
+
+		String title = "Account Verification";
+
+		MailData build = MailData.builder().title(title).to(user.getEmail()).message(message)
+				.subject("Account Created Sucessfully").build();
+
+		mailService.sendMail(build);
+
+	}
+
+	private void setRole(UsersDto usersDto, Users user) {
+
+		List<Integer> collect = usersDto.getRole().stream().map(r -> r.getId()).collect(Collectors.toList());
+		List<Role> role = roleRepo.findAllById(collect);
+		user.setRole(role);
 	}
 
 	private FileDetails saveFile(MultipartFile file) throws IOException {

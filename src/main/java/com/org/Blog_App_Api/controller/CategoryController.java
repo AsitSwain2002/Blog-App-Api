@@ -31,7 +31,7 @@ public class CategoryController {
 		if (saveCategory) {
 			return ResponseBuilder.withMessageNoData("Saved Successfully", HttpStatus.CREATED);
 		} else {
-			return ResponseBuilder.withErrorMessage("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseBuilder.withMessageNoData("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -39,7 +39,7 @@ public class CategoryController {
 	public ResponseEntity<?> findCategoyById(@PathVariable Integer id) {
 		CategoryDto findCategoryById = categoryService.findCategoryById(id);
 		if (ObjectUtils.isEmpty(findCategoryById)) {
-			return ResponseBuilder.withErrorMessage("No Content Present", HttpStatus.NO_CONTENT);
+			return ResponseBuilder.withMessageNoData("No Content Present", HttpStatus.NO_CONTENT);
 		} else {
 			return ResponseBuilder.withMessage("Fethed", findCategoryById, HttpStatus.OK);
 		}
@@ -49,7 +49,7 @@ public class CategoryController {
 	public ResponseEntity<?> findAllCategory() {
 		List<CategoryDto> findAllCategory = categoryService.findAllCategory();
 		if (ObjectUtils.isEmpty(findAllCategory)) {
-			return ResponseBuilder.withErrorMessage("No Content Present", HttpStatus.NO_CONTENT);
+			return ResponseBuilder.withMessageNoData("No Content Present", HttpStatus.NO_CONTENT);
 		} else {
 			return ResponseBuilder.withMessage("Fethed", findAllCategory, HttpStatus.OK);
 		}

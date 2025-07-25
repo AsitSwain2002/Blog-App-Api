@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.org.Blog_App_Api.Util.AppUtil;
 import com.org.Blog_App_Api.Util.ResponseBuilder;
 import com.org.Blog_App_Api.dto.PostDto;
 import com.org.Blog_App_Api.service.PostService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/v1/post")
@@ -40,12 +43,12 @@ public class PostController {
 		if (createrPost) {
 			return ResponseBuilder.withMessageNoData("post Saved Successfully", HttpStatus.OK);
 		} else {
-			return ResponseBuilder.withErrorMessage("Intername Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseBuilder.withMessageNoData("Intername Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@GetMapping("/all-post")
-	public ResponseEntity<?> fetchAllPost() {
+	public ResponseEntity<?> fetchAllPost(HttpServletRequest req) {
 		List<PostDto> fetchAllPost = postService.fetchAllPost();
 		if (ObjectUtils.isEmpty(fetchAllPost)) {
 			return ResponseBuilder.withMessageNoData("No data Present", HttpStatus.NO_CONTENT);
