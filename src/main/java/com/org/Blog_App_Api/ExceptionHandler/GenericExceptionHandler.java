@@ -49,12 +49,23 @@ public class GenericExceptionHandler {
 		ed.setValidationMessage(pv.getErrors());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(NullPointerException.class)
-	public ResponseEntity<?> PostVaidationException(NullPointerException pv) {
+	public ResponseEntity<?> nullPointerException(NullPointerException pv) {
 		ExceptionData ed = new ExceptionData();
 		ed.setMessage(pv.getMessage());
 		ed.setStatus(HttpStatus.BAD_REQUEST.value());
 		ed.setTime(new Date().toLocaleString());
+		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UsersValidationException.class)
+	public ResponseEntity<?> usersValidationException(UsersValidationException pv) {
+		ExceptionData ed = new ExceptionData();
+		ed.setMessage("Failed");
+		ed.setStatus(HttpStatus.BAD_REQUEST.value());
+		ed.setTime(new Date().toLocaleString());
+		ed.setValidationMessage(pv.getError());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
 	}
 }

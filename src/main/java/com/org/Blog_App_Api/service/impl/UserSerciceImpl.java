@@ -30,6 +30,7 @@ import com.org.Blog_App_Api.repo.FileRepo;
 import com.org.Blog_App_Api.repo.RoleRepo;
 import com.org.Blog_App_Api.repo.UserRepo;
 import com.org.Blog_App_Api.service.UserService;
+import com.org.Blog_App_Api.validation.UserValidation;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -48,7 +49,8 @@ public class UserSerciceImpl implements UserService {
 	private String folderName;
 	@Autowired
 	private RoleRepo roleRepo;
-
+	@Autowired
+	private UserValidation userValidation;
 	@Autowired
 	private MailService mailService;
 
@@ -56,10 +58,9 @@ public class UserSerciceImpl implements UserService {
 	public boolean registerUser(String reqUser, MultipartFile file, String url) throws Exception {
 
 		UsersDto usersDto = objMapper.readValue(reqUser, UsersDto.class);
-
-		Users user = mapper.map(usersDto, Users.class);
 		// user Validation
-
+		userValidation.validateUser(usersDto);
+		Users user = mapper.map(usersDto, Users.class);
 		// save User
 		FileDetails saveFile = saveFile(file);
 		if (!ObjectUtils.isEmpty(saveFile)) {

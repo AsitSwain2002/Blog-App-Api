@@ -8,4 +8,6 @@ import com.org.Blog_App_Api.model.Users;
 @Repository
 public interface UserRepo extends JpaRepository<Users, Integer> {
 
+	Users findByEmail(String email);
+
 }
