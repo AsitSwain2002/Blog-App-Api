@@ -7,10 +7,11 @@ import com.org.Blog_App_Api.ExceptionHandler.ExceptionData;
 
 public class ResponseBuilder {
 
-	public static ResponseEntity<?> withMessage(String message, Object data, HttpStatus status) {
+	public static ResponseEntity<?> withMessageAndData(String message, Object data, HttpStatus status) {
 		GenericResponseHandler gs = new GenericResponseHandler();
 		gs.setMessage(message);
 		gs.setStatusCode(status);
+		gs.setStatus(status.value());
 		gs.setData(data);
 		return gs.create();
 	}

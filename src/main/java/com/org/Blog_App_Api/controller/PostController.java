@@ -53,7 +53,7 @@ public class PostController {
 		if (ObjectUtils.isEmpty(fetchAllPost)) {
 			return ResponseBuilder.withMessageNoData("No data Present", HttpStatus.NO_CONTENT);
 		} else {
-			return ResponseBuilder.withMessage("fetched", fetchAllPost, HttpStatus.OK);
+			return ResponseBuilder.withMessageAndData("fetched", fetchAllPost, HttpStatus.OK);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class PostController {
 		if (findpostById == null) {
 			return ResponseBuilder.withMessageNoData("Post Not Found", HttpStatus.OK);
 		} else {
-			return ResponseBuilder.withMessage("Fetched Successfully", findpostById, HttpStatus.OK);
+			return ResponseBuilder.withMessageAndData("Fetched Successfully", findpostById, HttpStatus.OK);
 		}
 
 	}
@@ -74,7 +74,7 @@ public class PostController {
 		if (CollectionUtils.isEmpty(allPostByCategory)) {
 			return ResponseBuilder.withMessageNoData("Post Not Found", HttpStatus.OK);
 		} else {
-			return ResponseBuilder.withMessage("Fetched Successfully", allPostByCategory, HttpStatus.OK);
+			return ResponseBuilder.withMessageAndData("Fetched Successfully", allPostByCategory, HttpStatus.OK);
 		}
 
 	}

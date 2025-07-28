@@ -6,11 +6,17 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GenericResponseHandler {
 
 	private HttpStatus statusCode;
@@ -25,6 +31,7 @@ public class GenericResponseHandler {
 		response.put("status", status);
 		return new ResponseEntity<>(response, statusCode);
 	}
+
 	public ResponseEntity<?> onlyMessage() {
 		Map<String, Object> response = new LinkedHashMap<String, Object>();
 		response.put("message", message);

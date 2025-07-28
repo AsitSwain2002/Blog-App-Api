@@ -41,7 +41,7 @@ public class CategoryController {
 		if (ObjectUtils.isEmpty(findCategoryById)) {
 			return ResponseBuilder.withMessageNoData("No Content Present", HttpStatus.NO_CONTENT);
 		} else {
-			return ResponseBuilder.withMessage("Fethed", findCategoryById, HttpStatus.OK);
+			return ResponseBuilder.withMessageAndData("Fethed", findCategoryById, HttpStatus.OK);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class CategoryController {
 		if (ObjectUtils.isEmpty(findAllCategory)) {
 			return ResponseBuilder.withMessageNoData("No Content Present", HttpStatus.NO_CONTENT);
 		} else {
-			return ResponseBuilder.withMessage("Fethed", findAllCategory, HttpStatus.OK);
+			return ResponseBuilder.withMessageAndData("Fethed", findAllCategory, HttpStatus.OK);
 		}
 	}
 

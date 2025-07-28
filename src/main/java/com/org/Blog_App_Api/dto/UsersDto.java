@@ -21,14 +21,14 @@ public class UsersDto {
 	private String mobile;
 	private String email;
 	private String password;
-	private FileDetailsDto fileDetailsDto;
+	private FileDetailsDto fileDetails;
 	private List<RoleDto> role;
 
 	@Getter
 	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
-	public class FileDetailsDto {
+	public static class FileDetailsDto {
 		private String displayFileName;
 	}
 

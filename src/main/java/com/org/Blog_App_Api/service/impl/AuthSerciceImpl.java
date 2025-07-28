@@ -13,6 +13,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.Blog_App_Api.Util.AppUtil;
 import com.org.Blog_App_Api.Util.MailService;
+import com.org.Blog_App_Api.dto.LoginRequest;
+import com.org.Blog_App_Api.dto.LoginResponse;
 import com.org.Blog_App_Api.dto.MailData;
 import com.org.Blog_App_Api.dto.UsersDto;
 import com.org.Blog_App_Api.model.FileDetails;
@@ -29,13 +35,14 @@ import com.org.Blog_App_Api.model.Users;
 import com.org.Blog_App_Api.repo.FileRepo;
 import com.org.Blog_App_Api.repo.RoleRepo;
 import com.org.Blog_App_Api.repo.UserRepo;
-import com.org.Blog_App_Api.service.UserService;
+import com.org.Blog_App_Api.securityConfig.AuthUser;
+import com.org.Blog_App_Api.service.AuthService;
 import com.org.Blog_App_Api.validation.UserValidation;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class UserSerciceImpl implements UserService {
+public class AuthSerciceImpl implements AuthService {
 
 	@Autowired
 	private ObjectMapper objMapper;
@@ -53,6 +60,12 @@ public class UserSerciceImpl implements UserService {
 	private UserValidation userValidation;
 	@Autowired
 	private MailService mailService;
+	@Autowired
+	private AuthenticationManager manager;
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+	@Autowired
+	private JwtService jwtService;
 
 	@Override
 	public boolean registerUser(String reqUser, MultipartFile file, String url) throws Exception {
@@ -69,6 +82,7 @@ public class UserSerciceImpl implements UserService {
 		// Set Role
 		setRole(usersDto, user);
 		setVerification(user);
+		user.setPassword(encoder.encode(usersDto.getPassword()));
 		Users save = userRepo.save(user);
 		if (!ObjectUtils.isEmpty(save)) {
 			sendMail(user, url);
@@ -152,6 +166,25 @@ public class UserSerciceImpl implements UserService {
 			displayName = baseName.substring(0, 8) + "." + extension;
 		}
 		return displayName;
+	}
+
+	// login
+	@Override
+	public LoginResponse login(LoginRequest loginRequest) {
+		if (loginRequest != null) {
+			Authentication authenticate = manager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
+
+			if (authenticate.isAuthenticated()) {
+				AuthUser authUser = (AuthUser) authenticate.getPrincipal();
+				String token = jwtService.generateToken(authUser.getUser());
+				return LoginResponse.builder().userDto(mapper.map(authUser.getUser(), UsersDto.class)).token(token)
+						.build();
+
+			}
+		}
+
+		return null;
 	}
 
 }
