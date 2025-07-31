@@ -14,9 +14,10 @@ public class PostDto {
 	private Integer id;
 	private String title;
 	private String content;
-	private Date createdOn;
-	private int CreatedBy;
-	private Date updateOn;
+	private Date created_on;
+	private int Created_by;
+	private int update_by;
+	private Date update_on;
 	private boolean deleted;
 	private FileDetailsDto fileDetails;
 	private CategoryDto category;

@@ -18,7 +18,7 @@ public class BaseModel {
 
 	@CreatedBy
 	@Column(updatable = false)
-	private int Created_by;
+	private int created_by;
 	@CreatedDate
 	@Column(updatable = false)
 	private Date created_on;
