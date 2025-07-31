@@ -60,6 +60,7 @@ public class JwtService {
 
 	public Claims extractAllClaims(String token) {
 
+		// You write custom validate the token
 		try {
 			return Jwts.parser().verifyWith(decryptKey()).build().parseSignedClaims(token).getPayload();
 		} catch (SignatureException e) {

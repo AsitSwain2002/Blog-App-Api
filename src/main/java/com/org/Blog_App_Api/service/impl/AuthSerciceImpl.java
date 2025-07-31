@@ -75,6 +75,7 @@ public class AuthSerciceImpl implements AuthService {
 		userValidation.validateUser(usersDto);
 		Users user = mapper.map(usersDto, Users.class);
 		// save User
+		userExistCheck(user.getEmail());
 		FileDetails saveFile = saveFile(file);
 		if (!ObjectUtils.isEmpty(saveFile)) {
 			user.setFileDetails(saveFile);
@@ -89,6 +90,13 @@ public class AuthSerciceImpl implements AuthService {
 			return true;
 		}
 		return false;
+	}
+
+	private void userExistCheck(String email) {
+		boolean existsByEmail = userRepo.existsByEmail(email);
+		if (existsByEmail) {
+			throw new IllegalArgumentException("User Already Exist");
+		}
 	}
 
 	private void setVerification(Users user) {
@@ -178,7 +186,7 @@ public class AuthSerciceImpl implements AuthService {
 			if (authenticate.isAuthenticated()) {
 				AuthUser authUser = (AuthUser) authenticate.getPrincipal();
 				String token = jwtService.generateToken(authUser.getUser());
-				return LoginResponse.builder().userDto(mapper.map(authUser.getUser(), UsersDto.class)).token(token)
+				return LoginResponse.builder().user(mapper.map(authUser.getUser(), UsersDto.class)).token(token)
 						.build();
 
 			}

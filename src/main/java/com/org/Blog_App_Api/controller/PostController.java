@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +37,7 @@ public class PostController {
 	@Autowired
 	private PostService postService;
 
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/savePost")
 	public ResponseEntity<?> savePost(@RequestParam String postDto, @RequestParam("file") MultipartFile file)
 			throws IOException {
@@ -46,7 +48,7 @@ public class PostController {
 			return ResponseBuilder.withMessageNoData("Intername Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	@PreAuthorize("hasAnyRole('USER,'ADMIN')")
 	@GetMapping("/all-post")
 	public ResponseEntity<?> fetchAllPost(HttpServletRequest req) {
 		List<PostDto> fetchAllPost = postService.fetchAllPost();
@@ -56,7 +58,7 @@ public class PostController {
 			return ResponseBuilder.withMessageAndData("fetched", fetchAllPost, HttpStatus.OK);
 		}
 	}
-
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/find-post/{id}")
 	public ResponseEntity<?> findPost(@PathVariable int id) {
 		PostDto findpostById = postService.findpostById(id);
@@ -67,7 +69,7 @@ public class PostController {
 		}
 
 	}
-
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/find-all-post/{categoryId}")
 	public ResponseEntity<?> findAllPostByCategory(@PathVariable int categoryId) {
 		List<PostDto> allPostByCategory = postService.findpostByCategory(categoryId);
@@ -78,7 +80,7 @@ public class PostController {
 		}
 
 	}
-
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/delete-post/{id}")
 	public ResponseEntity<?> deletePost(@PathVariable int id) {
 		postService.deletePost(id);
