@@ -18,15 +18,15 @@ public class BaseModel {
 
 	@CreatedBy
 	@Column(updatable = false)
-	private int created_by;
+	private int createdBy;
 	@CreatedDate
 	@Column(updatable = false)
-	private Date created_on;
+	private Date createdOn;
 	@LastModifiedBy
 	@Column(insertable = false)
-	private int update_by;
+	private int updateBy;
 	@LastModifiedDate
 	@Column(insertable = false)
-	private Date update_on;
+	private Date updateOn;
 
 }

@@ -7,18 +7,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.org.Blog_App_Api.dto.FevoritePostDto;
 import com.org.Blog_App_Api.dto.PostDto;
 
 public interface PostService {
 
-	public boolean createrPost(String postDto,MultipartFile file) throws JsonMappingException, JsonProcessingException, IOException;
+	public boolean createrPost(String postDto, MultipartFile file)
+			throws JsonMappingException, JsonProcessingException, IOException;
 
 	public List<PostDto> fetchAllPost();
 
 	public PostDto findpostById(int id);
-	
+
 	public void deletePost(int id);
 
 	public List<PostDto> findpostByCategory(int categoryId);
-	
+
+	public List<PostDto> recycleBinPosts();
+
+	public void fevoritePost(int postId);
+
+	public List<FevoritePostDto> fevoritePost();
+
+	public void unFevoritePost(int postId);
+
 }

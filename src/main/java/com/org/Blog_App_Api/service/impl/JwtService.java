@@ -44,7 +44,7 @@ public class JwtService {
 		map.put("status", user.getUserVerification().isActive());
 
 		return Jwts.builder().claims().add(map).subject(user.getEmail()).issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 20L * 60 * 60 + 1000)).and().signWith(getKey())
+				.expiration(new Date(System.currentTimeMillis() + 6 * 60 * 60 * 1000)).and().signWith(getKey())
 				.compact();
 	}
 

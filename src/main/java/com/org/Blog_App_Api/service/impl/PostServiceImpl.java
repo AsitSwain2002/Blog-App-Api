@@ -20,14 +20,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.Blog_App_Api.ExceptionHandler.ResourceNotFoundException;
+import com.org.Blog_App_Api.dto.FevoritePostDto;
 import com.org.Blog_App_Api.dto.FileDetailsDto;
 import com.org.Blog_App_Api.dto.PostDto;
 import com.org.Blog_App_Api.model.Category;
+import com.org.Blog_App_Api.model.FevoritePost;
 import com.org.Blog_App_Api.model.FileDetails;
 import com.org.Blog_App_Api.model.Post;
+import com.org.Blog_App_Api.model.Users;
 import com.org.Blog_App_Api.repo.CategoryRepo;
+import com.org.Blog_App_Api.repo.FevoriteRepo;
 import com.org.Blog_App_Api.repo.FileRepo;
 import com.org.Blog_App_Api.repo.PostRepo;
+import com.org.Blog_App_Api.repo.UserRepo;
 import com.org.Blog_App_Api.service.PostService;
 import com.org.Blog_App_Api.validation.PostValidation;
 
@@ -51,6 +56,12 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private PostValidation postValidation;
+
+	@Autowired
+	private UserRepo userRepo;
+
+	@Autowired
+	private FevoriteRepo fevoriteRepo;
 
 	@Override
 	public boolean createrPost(String postReq, MultipartFile file) throws IOException {
@@ -180,6 +191,50 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + id + "Not Found"));
 		post.setDeleted(true);
 		postRepo.save(post);
+	}
+
+	@Override
+	public List<PostDto> recycleBinPosts() {
+		int userId = 12;
+		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+		List<Post> findAllByDeletedFalse = postRepo.findAllByCreatedByAndDeletedTure(userId);
+		return findAllByDeletedFalse.stream().map(ele -> mapper.map(ele, PostDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void fevoritePost(int postId) {
+		int userId = 12;
+		Post post = postRepo.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + postId + "Not Found"));
+		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+		FevoritePost favPost = FevoritePost.builder().usersId(userId).post(post).build();
+		fevoriteRepo.save(favPost);
+	}
+
+	@Override
+	public List<FevoritePostDto> fevoritePost() {
+
+		int userId = 12;
+		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+		List<FevoritePost> findAllByUsersId = fevoriteRepo.findAllByUsersId(userId);
+		return findAllByUsersId.stream().map(ele -> mapper.map(ele, FevoritePostDto.class))
+				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public void unFevoritePost(int postId) {
+		int userId = 12;
+		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+		Post post = postRepo.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + postId + " Not Found"));
+		FevoritePost favPost = fevoriteRepo.findByPostId(postId);
+		if (favPost == null) {
+			throw new ResourceNotFoundException("Post Not Found");
+		}
+		fevoriteRepo.delete(favPost);
 	}
 
 }
