@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.org.Blog_App_Api.Util.AppUtil;
 import com.org.Blog_App_Api.Util.ResponseBuilder;
 import com.org.Blog_App_Api.dto.FevoritePostDto;
 import com.org.Blog_App_Api.dto.PostDto;
