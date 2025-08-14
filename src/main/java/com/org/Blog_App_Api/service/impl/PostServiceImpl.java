@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -183,9 +184,14 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void deletePost(int id) {
+		int userId = AppUtil.getLoggedUser().getId();
 		Post post = postRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + id + "Not Found"));
+		if (post.getCreatedBy() != userId) {
+			throw new IllegalArgumentException("Acess Denied");
+		}
 		post.setDeleted(true);
+		post.setDeletedOn(new Date());
 		postRepo.save(post);
 	}
 
@@ -231,6 +237,38 @@ public class PostServiceImpl implements PostService {
 			throw new ResourceNotFoundException("Post Not Found");
 		}
 		fevoriteRepo.delete(favPost);
+	}
+
+	// remove post from recycle Bin
+	@Override
+	public void removePostFromRecycleBin(int postId) {
+		int userId = AppUtil.getLoggedUser().getId();
+		Post post = postRepo.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + postId + "Not Found"));
+		if (post.getCreatedBy() != userId) {
+			throw new IllegalArgumentException("Acess Denied");
+		}
+		if (!post.isDeleted()) {
+			throw new IllegalArgumentException("Acess Denied");
+		}
+		post.setDeleted(false);
+		post.setDeletedOn(null);
+		postRepo.save(post);
+
+	}
+
+	// remove all post from recycle Bin
+	@Override
+	public void removeAllRecycleBinPost() {
+
+		int userId = AppUtil.getLoggedUser().getId();
+		List<Post> post = postRepo.findAllByCreatedBy(userId);
+		post.forEach(p -> {
+			p.setDeleted(false);
+			p.setDeletedOn(null);
+		});
+
+		postRepo.saveAll(post);
 	}
 
 }

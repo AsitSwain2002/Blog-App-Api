@@ -1,5 +1,7 @@
 package com.org.Blog_App_Api.model;
 
+import java.util.Date;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -25,4 +27,5 @@ public class Post extends BaseModel {
 	@ManyToOne
 	private FileDetails fileDetails;
 	private boolean deleted;
+	private Date deletedOn;
 }

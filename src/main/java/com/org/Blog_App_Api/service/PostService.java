@@ -25,6 +25,10 @@ public interface PostService {
 
 	public List<PostDto> recycleBinPosts();
 
+	public void removePostFromRecycleBin(int postId);
+
+	public void removeAllRecycleBinPost();
+
 	public void fevoritePost(int postId);
 
 	public List<FevoritePostDto> fevoritePost();

@@ -99,6 +99,16 @@ public class PostController {
 		}
 	}
 
+	@GetMapping("/remove-recycle-bin-post/{postId}")
+	public ResponseEntity<?> removeRecycleBinPost(@PathVariable int postId) {
+		postService.removePostFromRecycleBin(postId);
+		return ResponseBuilder.withMessageNoData("Removed Post From Recycle Bin", HttpStatus.OK);
+	}
+	@GetMapping("/remove-all-recycle-bin-post")
+	public ResponseEntity<?> removeAllRecycleBinPost() {
+		postService.removeAllRecycleBinPost();
+		return ResponseBuilder.withMessageNoData("Removed All Post  From Recycle Bin", HttpStatus.OK);
+	}
 	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/like-post/{postId}")
 	public ResponseEntity<?> likePost(@PathVariable int postId) {
