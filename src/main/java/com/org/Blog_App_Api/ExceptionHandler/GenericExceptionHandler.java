@@ -68,7 +68,7 @@ public class GenericExceptionHandler {
 		ed.setValidationMessage(pv.getError());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(JwtTimeExpairedException.class)
 	public ResponseEntity<?> jwtTimeExpaired(JwtTimeExpairedException pv) {
 		ExceptionData ed = new ExceptionData();
@@ -76,5 +76,14 @@ public class GenericExceptionHandler {
 		ed.setStatus(HttpStatus.UNAUTHORIZED.value());
 		ed.setTime(new Date().toLocaleString());
 		return ResponseBuilder.withErrorMessage(ed, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(CategoryValidationException.class)
+	public ResponseEntity<?> categoryValidationException(CategoryValidationException ex) {
+		ExceptionData ed = new ExceptionData();
+		ed.setMessage(ex.getMessage());
+		ed.setStatus(HttpStatus.BAD_REQUEST.value());
+		ed.setTime(new Date().toLocaleString());
+		return ResponseBuilder.withValidationErrorMessage(ed, ex.getError(), HttpStatus.BAD_REQUEST);
 	}
 }

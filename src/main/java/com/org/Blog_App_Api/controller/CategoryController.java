@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.org.Blog_App_Api.Util.ResponseBuilder;
 import com.org.Blog_App_Api.dto.CategoryDto;
 import com.org.Blog_App_Api.service.CategoryService;
+import com.org.Blog_App_Api.validation.CategoryValidation;
 
 @RestController
 @RequestMapping("/api/v1/category")
