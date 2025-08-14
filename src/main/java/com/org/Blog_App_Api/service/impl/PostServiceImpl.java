@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.org.Blog_App_Api.ExceptionHandler.ResourceNotFoundException;
+import com.org.Blog_App_Api.Util.AppUtil;
 import com.org.Blog_App_Api.dto.FevoritePostDto;
-import com.org.Blog_App_Api.dto.FileDetailsDto;
 import com.org.Blog_App_Api.dto.PostDto;
-import com.org.Blog_App_Api.model.Category;
 import com.org.Blog_App_Api.model.FevoritePost;
 import com.org.Blog_App_Api.model.FileDetails;
 import com.org.Blog_App_Api.model.Post;
@@ -35,8 +33,6 @@ import com.org.Blog_App_Api.repo.PostRepo;
 import com.org.Blog_App_Api.repo.UserRepo;
 import com.org.Blog_App_Api.service.PostService;
 import com.org.Blog_App_Api.validation.PostValidation;
-
-import ch.qos.logback.core.util.FileUtil;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -195,7 +191,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDto> recycleBinPosts() {
-		int userId = 12;
+		int userId = AppUtil.getLoggedUser().getId();
 		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 		List<Post> findAllByDeletedFalse = postRepo.findAllByCreatedByAndDeletedTure(userId);
 		return findAllByDeletedFalse.stream().map(ele -> mapper.map(ele, PostDto.class)).collect(Collectors.toList());
@@ -203,7 +199,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void fevoritePost(int postId) {
-		int userId = 12;
+		int userId = AppUtil.getLoggedUser().getId();
 		Post post = postRepo.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException("Post with Id  " + postId + "Not Found"));
 		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
@@ -214,7 +210,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<FevoritePostDto> fevoritePost() {
 
-		int userId = 12;
+		int userId = AppUtil.getLoggedUser().getId();
 		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
 		List<FevoritePost> findAllByUsersId = fevoriteRepo.findAllByUsersId(userId);
@@ -225,7 +221,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void unFevoritePost(int postId) {
-		int userId = 12;
+		int userId = AppUtil.getLoggedUser().getId();
 		Users user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
 		Post post = postRepo.findById(postId)
