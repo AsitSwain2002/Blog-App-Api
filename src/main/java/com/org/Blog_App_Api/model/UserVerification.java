@@ -23,4 +23,5 @@ public class UserVerification {
 	private int id;
 	private boolean isActive;
 	private String verificationCode;
+	private boolean passwordUpdate;
 }
